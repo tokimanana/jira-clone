@@ -13,6 +13,7 @@ import { authReducer } from './store/auth/auth.reducer';
 import { routes } from './app.routes';
 import { environment } from '../environments/environment.development';
 import { AuthState } from './store/auth/auth.model';
+import { AuthEffect } from './store/auth/auth.effects';
 
 // Interface pour typer l'état global
 export interface AppState {
@@ -37,7 +38,7 @@ export const appConfig: ApplicationConfig = {
       router: routerReducer,
       auth: authReducer,
     }, {metaReducers}),
-    provideEffects([]),
+    provideEffects([AuthEffect]),
     provideStoreDevtools(),
     provideRouterStore(),
     provideFirebaseApp(() => initializeApp(environment.firebase)),
