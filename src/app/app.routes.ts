@@ -13,11 +13,11 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./auth/register/register.component').then((m) => m.RegisterComponent),
   },
-  // {
-  //   path: 'board',
-  //   loadComponent: () => import('./kanban/kanban-board/kanban-board.component').then(m => m.KanbanBoardComponent),
-  //   canActivate: [authGuard]
-  // },
+  {
+    path: 'board',
+    loadComponent: () => import('./kanban/kanban-board/kanban-board.component').then(m => m.KanbanBoardComponent),
+    canActivate: [authGuard]
+  },
   {
     path: '',
     redirectTo: 'board',
