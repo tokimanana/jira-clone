@@ -14,14 +14,20 @@ import { routes } from './app.routes';
 import { environment } from '../environments/environment.development';
 import { AuthState } from './store/auth/auth.model';
 import { AuthEffect } from './store/auth/auth.effects';
+import { tasksReducer } from './store/tasks/tasks.reducer';
+import { TasksState } from './store/tasks/tasks.model';
+import { TasksEffect } from './store/tasks/tasks.effects';
 
 // Interface pour typer l'état global
 export interface AppState {
   router: unknown;
   auth: AuthState;
+  tasks: TasksState;
 }
 
-export function localStorageSyncReducer(reducer: ActionReducer<any>): ActionReducer<any> {
+export function localStorageSyncReducer(
+  reducer: ActionReducer<any>
+): ActionReducer<any> {
   return localStorageSync({
     keys: ['auth'],
     rehydrate: true,
@@ -34,15 +40,19 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-    provideStore({
-      router: routerReducer,
-      auth: authReducer,
-    }, {metaReducers}),
-    provideEffects([AuthEffect]),
+    provideStore(
+      {
+        router: routerReducer,
+        auth: authReducer,
+        tasks: tasksReducer,
+      },
+      { metaReducers }
+    ),
+    provideEffects([AuthEffect, TasksEffect]),
     provideStoreDevtools(),
     provideRouterStore(),
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
-    provideFirestore(() => getFirestore())
+    provideFirestore(() => getFirestore()),
   ],
 };
