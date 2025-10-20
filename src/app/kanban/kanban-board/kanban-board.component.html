@@ -1,1 +1,52 @@
-<p>kanban-board works!</p>
+<div class="board-container">
+  <div class="column">
+    <h2 class="column-title">To Do</h2>
+    <div
+      id="todo-list"
+      class="task-list"
+      cdkDropList
+      [cdkDropListData]="(toDoTasks$ | async) || []"
+    >
+      @for (task of toDoTasks$ | async; track task.id) {
+        <app-task-card
+          [task]="task"
+          cdkDrag
+        ></app-task-card>
+      }
+    </div>
+  </div>
+
+  <div class="column">
+    <h2 class="column-title">In Progress</h2>
+    <div
+      id="inprogress-list"
+      class="task-list"
+      cdkDropList
+      [cdkDropListData]="(inProgresTasks$ | async) || []"
+    >
+    @for(task of inProgresTasks$ | async; track task.id) {
+      <app-task-card
+          [task]="task"
+          cdkDrag
+        ></app-task-card>
+      }
+    </div>
+  </div>
+
+  <div class="column">
+    <h2 class="column-title">Done</h2>
+    <div
+      id="done-list"
+      class="task-list"
+      cdkDropList
+      [cdkDropListData]="(doneTasks$ | async) || []"
+    >
+    @for(task of doneTasks$ | async; track task.id) {
+      <app-task-card
+          [task]="task"
+          cdkDrag
+        ></app-task-card>
+      }
+    </div>
+  </div>
+</div>
