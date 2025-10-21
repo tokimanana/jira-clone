@@ -22,4 +22,23 @@ export class TasksEffect {
       )
     )
   );
+
+  //addEffect
+  addTask$ = createEffect(() =>
+    this.action$.pipe(
+      ofType(TasksAction.addTask),
+      switchMap(({ taskData }) =>
+        this.tasksService.addTasks(taskData).pipe(
+          map((docRef) =>
+            TasksAction.addTaskSuccess({
+              task: { ...taskData, id: docRef.id },
+            })
+          ),
+          catchError((error) =>
+            of(TasksAction.addTaskFailure({ error: error.message }))
+          )
+        )
+      )
+    )
+  );
 }
