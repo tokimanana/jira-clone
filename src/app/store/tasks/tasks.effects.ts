@@ -41,4 +41,34 @@ export class TasksEffect {
       )
     )
   );
+
+  //updateEffect
+  updateTask$ = createEffect(() =>
+    this.action$.pipe(
+      ofType(TasksAction.updateTask),
+      switchMap(({ task }) =>
+        this.tasksService.updateTask(task).pipe(
+          map(() => TasksAction.updateTaskSuccess({ task })),
+          catchError((error) =>
+            of(TasksAction.updateTaskFailure({ error: error.message }))
+          )
+        )
+      )
+    )
+  );
+
+  //deleteTask$
+  deleteTask$ = createEffect(() =>
+    this.action$.pipe(
+      ofType(TasksAction.deleteTask),
+      switchMap(({ taskId }) =>
+        this.tasksService.deleteTask(taskId).pipe(
+          map(() => TasksAction.deleteTaskSuccess({ taskId })),
+          catchError((error) =>
+            of(TasksAction.deleteTaskFailure({ error: error.message }))
+          )
+        )
+      )
+    )
+  );
 }
