@@ -8,7 +8,7 @@ export const initialeState: UsersState = {
     error: null,
 }
 
-export const UsersReducer = createReducer(
+export const usersReducer = createReducer(
   initialeState,
 
   on(UsersActions.loadUsers, (state) => ({

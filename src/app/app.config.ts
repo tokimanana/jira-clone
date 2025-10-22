@@ -17,12 +17,15 @@ import { AuthEffect } from './store/auth/auth.effects';
 import { tasksReducer } from './store/tasks/tasks.reducer';
 import { TasksState } from './store/tasks/tasks.model';
 import { TasksEffect } from './store/tasks/tasks.effects';
+import { UsersState } from './store/users/users.model';
+import { usersReducer } from './store/users/users.reducer';
 
 // Interface pour typer l'état global
 export interface AppState {
   router: unknown;
   auth: AuthState;
   tasks: TasksState;
+  users: UsersState;
 }
 
 export function localStorageSyncReducer(
@@ -45,6 +48,7 @@ export const appConfig: ApplicationConfig = {
         router: routerReducer,
         auth: authReducer,
         tasks: tasksReducer,
+        users: usersReducer,
       },
       { metaReducers }
     ),
