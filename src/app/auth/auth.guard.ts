@@ -1,7 +1,7 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { selectIsLoggedIn } from '../store/auth/auth.selector';
+import { selectIsLoggedIn } from '../store/auth/auth.selectors';
 import { map, take } from 'rxjs';
 
 export const authGuard: CanActivateFn = () => {
@@ -10,9 +10,9 @@ export const authGuard: CanActivateFn = () => {
 
   return store.select(selectIsLoggedIn).pipe(
     take(1),
-    map(isLoggedIn => {
-      if(isLoggedIn) {
-        return true
+    map((isLoggedIn) => {
+      if (isLoggedIn) {
+        return true;
       }
       return router.createUrlTree(['/login']);
     })

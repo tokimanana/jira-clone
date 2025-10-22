@@ -2,7 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { Task } from '../../store/tasks/tasks.model';
-import { selectDoneTasks, selectInProgressTasks, selectToDoTasks } from '../../store/tasks/tasks.selector';
+import { selectDoneTasks, selectInProgressTasks, selectToDoTasks } from '../../store/tasks/tasks.selectors';
 import { TasksAction } from '../../store/tasks/tasks.actions';
 import { CommonModule } from '@angular/common';
 import { TaskCardComponent } from "../task-card/task-card.component";
