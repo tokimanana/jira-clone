@@ -19,6 +19,7 @@ import { TasksState } from './store/tasks/tasks.model';
 import { TasksEffect } from './store/tasks/tasks.effects';
 import { UsersState } from './store/users/users.model';
 import { usersReducer } from './store/users/users.reducer';
+import { UsersEffect } from './store/users/users.effect';
 
 // Interface pour typer l'état global
 export interface AppState {
@@ -52,7 +53,7 @@ export const appConfig: ApplicationConfig = {
       },
       { metaReducers }
     ),
-    provideEffects([AuthEffect, TasksEffect]),
+    provideEffects([AuthEffect, TasksEffect, UsersEffect]),
     provideStoreDevtools(),
     provideRouterStore(),
     provideFirebaseApp(() => initializeApp(environment.firebase)),
