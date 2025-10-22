@@ -3,7 +3,7 @@ import { UsersState } from "./users.model";
 import { UsersActions } from "./users.action";
 
 export const initialeState: UsersState = {
-    Users: [],
+    users: [],
     isLoading: false,
     error: null,
 }

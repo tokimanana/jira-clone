@@ -5,7 +5,7 @@ export interface User {
 }
 
 export interface UsersState {
-  Users: User[];
+  users: User[];
   isLoading: boolean;
   error: string | null;
 }
