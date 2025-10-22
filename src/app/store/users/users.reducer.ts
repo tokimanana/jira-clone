@@ -1,0 +1,29 @@
+import { createReducer, on } from "@ngrx/store";
+import { UsersState } from "./users.model";
+import { UsersActions } from "./users.action";
+
+export const initialeState: UsersState = {
+    Users: [],
+    isLoading: false,
+    error: null,
+}
+
+export const UsersReducer = createReducer(
+  initialeState,
+
+  on(UsersActions.loadUsers, (state) => ({
+    ...state,
+    isLoading: true
+  })),
+  on(UsersActions.loadTasksSuccess, (state, { users }) => ({
+    ...state,
+    Users: users,
+    isLoading: false,
+    error: null
+  })),
+  on(UsersActions.loadTasksFailure, (state, { error }) => ({
+    ...state,
+    isLoading: false,
+    error
+  }))
+)
