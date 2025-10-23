@@ -16,8 +16,12 @@ import { from, Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class TasksService {
-  private firestore: Firestore = inject(Firestore);
-  private tasksCollection = collection(this.firestore, 'tasks');
+  private readonly firestore: Firestore = inject(Firestore);
+
+  // ✅ Getter au lieu d'une propriété
+  private get tasksCollection() {
+    return collection(this.firestore, 'tasks');
+  }
 
   getTasks(): Observable<Task[]> {
     return collectionData(this.tasksCollection, {
