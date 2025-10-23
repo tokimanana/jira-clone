@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Task } from '../../store/tasks/tasks.model';
 
 @Component({
@@ -9,4 +9,7 @@ import { Task } from '../../store/tasks/tasks.model';
 })
 export class TaskCardComponent {
   @Input({ required: true }) task!: Task;
+
+  @Output() edit = new EventEmitter();
+  @Output() delete = new EventEmitter();
 }
