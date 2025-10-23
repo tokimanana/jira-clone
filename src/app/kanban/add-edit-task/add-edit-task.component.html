@@ -1,0 +1,65 @@
+<div class="modal-backdrop" (click)="onClose()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <header class="modal-header">
+      <h2>{{ isEditMode ? "Edit Task" : "Create New Task" }}</h2>
+      <button (click)="onClose()">x</button>
+    </header>
+
+    <form (ngSubmit)="onSubmit()" #taskForm="ngForm" class="modal-body">
+      <div class="form-field">
+        <label for="title">Title</label>
+        <input
+          type="text"
+          name="title"
+          id="title"
+          [(ngModel)]="taskData.title"
+          required
+          placeholder="e.g., Implement login page"
+        />
+      </div>
+
+      <div class="form-field">
+        <label for="description">Description</label>
+        <textarea
+          name="description"
+          id="description"
+          [(ngModel)]="taskData.description"
+          rows="4"
+          placeholder="Add a more detailed description..."
+        ></textarea>
+      </div>
+
+      <div class="form-field">
+        <label for="assignee">Assign To</label>
+        <select name="assignee" id="assignee" [(ngModel)]="taskData.assigneeId">
+          <option [ngValue]="null">-- Unassigned --</option>
+          <option *ngFor="let user of users$ | async" [value]="user.uid">
+            {{ user.name }}
+          </option>
+        </select>
+      </div>
+
+      <div *ngIf="isEditMode" class="form-field">
+        <label for="status">Status</label>
+        <select name="status" id="status" [(ngModel)]="taskData.status">
+          <option value="To Do">To Do</option>
+          <option value="In Progress">In Progress</option>
+          <option value="Done">Done</option>
+        </select>
+      </div>
+
+      <footer class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="onClose()">
+          Cancel
+        </button>
+        <button
+          type="submit"
+          class="btn btn-primary"
+          [disabled]="!taskForm.form.valid"
+        >
+          {{ isEditMode ? "Save Changes" : "Create Task" }}
+        </button>
+      </footer>
+    </form>
+  </div>
+</div>
