@@ -13,11 +13,12 @@ export const usersReducer = createReducer(
 
   on(UsersActions.loadUsers, (state) => ({
     ...state,
-    isLoading: true
+    isLoading: true,
+    error: null
   })),
   on(UsersActions.loadTasksSuccess, (state, { users }) => ({
     ...state,
-    Users: users,
+    users: users,
     isLoading: false,
     error: null
   })),

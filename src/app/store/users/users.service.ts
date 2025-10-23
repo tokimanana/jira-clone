@@ -9,6 +9,8 @@ export class UsersService {
 
   getUsers(): Observable<User[]> {
     const usersCollection = collection(this.firestore, 'users');
-    return collectionData(usersCollection) as Observable<User[]>;
+    return collectionData(usersCollection, { idField: 'uid' }) as Observable<
+      User[]
+    >;
   }
 }
