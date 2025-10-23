@@ -6,7 +6,7 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import { Task } from '../../store/tasks/tasks.model';
+import { Task, TaskStatus } from '../../store/tasks/tasks.model';
 import { filter, first, Observable } from 'rxjs';
 import { User } from '../../store/users/users.model';
 import { Store } from '@ngrx/store';
@@ -37,7 +37,7 @@ export class AddEditTaskComponent implements OnInit {
   taskData: {
     title: string;
     description: string;
-    status: 'To Do' | 'In Progress' | 'Done';
+    status: TaskStatus;
     assigneeId: string | null;
   } = {
     title: '',
