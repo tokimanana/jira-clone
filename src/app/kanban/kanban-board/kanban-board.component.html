@@ -1,4 +1,8 @@
-<div class="board-container">
+<div class="board-header">
+  <button class="btn btn-primary" (click)="openModal()">+ Create Task</button>
+</div>
+
+<div class="board-container" cdkDropListGroup>
   <div class="column">
     <h2 class="column-title">To Do</h2>
     <div
@@ -6,12 +10,15 @@
       class="task-list"
       cdkDropList
       [cdkDropListData]="(toDoTasks$ | async) || []"
+      (cdkDropListDropped)="onDrop($event)"
     >
       @for (task of toDoTasks$ | async; track task.id) {
-        <app-task-card
-          [task]="task"
-          cdkDrag
-        ></app-task-card>
+      <app-task-card
+        [task]="task"
+        cdkDrag
+        (edit)="openModal(task)"
+        (delete)="onDeleteTask(task.id)"
+      ></app-task-card>
       }
     </div>
   </div>
@@ -23,12 +30,15 @@
       class="task-list"
       cdkDropList
       [cdkDropListData]="(inProgresTasks$ | async) || []"
+      (cdkDropListDropped)="onDrop($event)"
     >
-    @for(task of inProgresTasks$ | async; track task.id) {
+      @for(task of inProgresTasks$ | async; track task.id) {
       <app-task-card
-          [task]="task"
-          cdkDrag
-        ></app-task-card>
+        [task]="task"
+        cdkDrag
+        (edit)="openModal(task)"
+        (delete)="onDeleteTask(task.id)"
+      ></app-task-card>
       }
     </div>
   </div>
@@ -40,13 +50,18 @@
       class="task-list"
       cdkDropList
       [cdkDropListData]="(doneTasks$ | async) || []"
+      (cdkDropListDropped)="onDrop($event)"
     >
-    @for(task of doneTasks$ | async; track task.id) {
+      @for(task of doneTasks$ | async; track task.id) {
       <app-task-card
-          [task]="task"
-          cdkDrag
-        ></app-task-card>
+        [task]="task"
+        cdkDrag
+        (edit)="openModal(task)"
+        (delete)="onDeleteTask(task.id)"
+      ></app-task-card>
       }
     </div>
   </div>
 </div>
+
+<app-add-edit-task *ngIf="isModalOpen" [task]="editingTask" (close)="closeModal()"></app-add-edit-task>
