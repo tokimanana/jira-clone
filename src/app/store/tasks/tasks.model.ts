@@ -14,3 +14,7 @@ export interface TasksState {
   isLoading: boolean;
   error: string | null;
 }
+
+export interface TaskWithAssignee extends Task {
+  assigneeName?: string
+}
