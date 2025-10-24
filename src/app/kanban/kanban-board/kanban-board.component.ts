@@ -1,12 +1,8 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { Task, TaskStatus } from '../../store/tasks/tasks.model';
-import {
-  selectDoneTasks,
-  selectInProgressTasks,
-  selectToDoTasks,
-} from '../../store/tasks/tasks.selectors';
+import { Task, TaskStatus, TaskWithAssignee } from '../../store/tasks/tasks.model';
+import { selectDoneTasksWithAssigneeName, selectInProgressTasksWithAssigneeName, selectToDoTasksWithAssigneeName } from '../../store/tasks/tasks.selectors';
 import { TasksAction } from '../../store/tasks/tasks.actions';
 import { CommonModule } from '@angular/common';
 import { TaskCardComponent } from '../task-card/task-card.component';
@@ -27,11 +23,9 @@ import { AddEditTaskComponent } from '../add-edit-task/add-edit-task.component';
 export class KanbanBoardComponent implements OnInit {
   private readonly store = inject(Store);
 
-  toDoTasks$: Observable<Task[]> = this.store.select(selectToDoTasks);
-  inProgresTasks$: Observable<Task[]> = this.store.select(
-    selectInProgressTasks
-  );
-  doneTasks$: Observable<Task[]> = this.store.select(selectDoneTasks);
+  toDoTasks$: Observable<TaskWithAssignee[]> = this.store.select(selectToDoTasksWithAssigneeName);
+  inProgresTasks$: Observable<TaskWithAssignee[]> = this.store.select(selectInProgressTasksWithAssigneeName);
+  doneTasks$: Observable<TaskWithAssignee[]> = this.store.select(selectDoneTasksWithAssigneeName);
 
   isModalOpen = false;
   editingTask: Task | null = null;
@@ -66,7 +60,7 @@ export class KanbanBoardComponent implements OnInit {
   }
 
   //onDrop
-  onDrop(event: CdkDragDrop<Task[]>): void {
+  onDrop(event: CdkDragDrop<TaskWithAssignee[]>): void {
     if (event.previousContainer === event.container) return;
     const task = event.previousContainer.data[event.previousIndex];
     const newStatus = this.getColumnStatus(event.container.id);
