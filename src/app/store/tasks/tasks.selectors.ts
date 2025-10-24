@@ -13,7 +13,7 @@ export const selectTasksWithAssigneeInfo = createSelector(
   selectAllTasks,
   selectAllUsers,
   (tasks, users): TaskWithAssignee[] => {
-    const userMap = new Map(users.map((user) => [user.uid, user.name]));
+    const userMap = new Map<string, string>(users.map((user) => [user.uid, user.name]));
 
     return tasks.map((task) => ({
       ...task,
