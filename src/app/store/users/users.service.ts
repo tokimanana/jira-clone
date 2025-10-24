@@ -6,11 +6,16 @@ import { User } from './users.model';
 @Injectable({ providedIn: 'root' })
 export class UsersService {
   private readonly firestore: Firestore = inject(Firestore);
+  private readonly usersCollection = collection(this.firestore, 'users');
+  private readonly users$: Observable<User[]>;
+
+  constructor() {
+    this.users$ = collectionData(this.usersCollection, {
+      idField: 'uid',
+    }) as Observable<User[]>;
+  }
 
   getUsers(): Observable<User[]> {
-    const usersCollection = collection(this.firestore, 'users');
-    return collectionData(usersCollection, { idField: 'uid' }) as Observable<
-      User[]
-    >;
+    return this.users$;
   }
 }
