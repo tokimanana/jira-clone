@@ -8,6 +8,7 @@ import { CommonModule } from '@angular/common';
 import { TaskCardComponent } from '../task-card/task-card.component';
 import { CdkDragDrop, DragDropModule } from '@angular/cdk/drag-drop';
 import { AddEditTaskComponent } from '../add-edit-task/add-edit-task.component';
+import { UsersActions } from '../../store/users/users.action';
 
 @Component({
   selector: 'app-kanban-board',
@@ -23,15 +24,16 @@ import { AddEditTaskComponent } from '../add-edit-task/add-edit-task.component';
 export class KanbanBoardComponent implements OnInit {
   private readonly store = inject(Store);
 
-  toDoTasks$: Observable<TaskWithAssignee[]> = this.store.select(selectToDoTasksWithAssigneeName);
-  inProgresTasks$: Observable<TaskWithAssignee[]> = this.store.select(selectInProgressTasksWithAssigneeName);
-  doneTasks$: Observable<TaskWithAssignee[]> = this.store.select(selectDoneTasksWithAssigneeName);
+  readonly toDoTasks$: Observable<TaskWithAssignee[]> = this.store.select(selectToDoTasksWithAssigneeName);
+  readonly inProgressTasks$: Observable<TaskWithAssignee[]> = this.store.select(selectInProgressTasksWithAssigneeName);
+  readonly doneTasks$: Observable<TaskWithAssignee[]> = this.store.select(selectDoneTasksWithAssigneeName);
 
   isModalOpen = false;
   editingTask: Task | null = null;
 
   ngOnInit(): void {
     this.store.dispatch(TasksAction.loadTasks());
+    this.store.dispatch(UsersActions.loadUsers()); 
   }
 
   private readonly columnStatusMap: Record<string, TaskStatus> = {

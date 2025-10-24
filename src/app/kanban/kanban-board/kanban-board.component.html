@@ -29,10 +29,10 @@
       id="inprogress-list"
       class="task-list"
       cdkDropList
-      [cdkDropListData]="(inProgresTasks$ | async) || []"
+      [cdkDropListData]="(inProgressTasks$ | async) || []"
       (cdkDropListDropped)="onDrop($event)"
     >
-      @for(task of inProgresTasks$ | async; track task.id) {
+      @for(task of inProgressTasks$ | async; track task.id) {
       <app-task-card
         [task]="task"
         cdkDrag
