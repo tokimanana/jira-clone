@@ -1,8 +1,8 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { Task, TaskStatus, TaskWithAssignee } from '../../store/tasks/tasks.model';
-import { selectDoneTasksWithAssigneeName, selectInProgressTasksWithAssigneeName, selectToDoTasksWithAssigneeName } from '../../store/tasks/tasks.selectors';
+import { selectDoneTasksWithAssigneeName, selectInProgressTasksWithAssigneeName, selectMyTasks, selectToDoTasksWithAssigneeName } from '../../store/tasks/tasks.selectors';
 import { TasksAction } from '../../store/tasks/tasks.actions';
 import { CommonModule } from '@angular/common';
 import { TaskCardComponent } from '../task-card/task-card.component';
@@ -24,16 +24,28 @@ import { UsersActions } from '../../store/users/users.action';
 export class KanbanBoardComponent implements OnInit {
   private readonly store = inject(Store);
 
-  readonly toDoTasks$: Observable<TaskWithAssignee[]> = this.store.select(selectToDoTasksWithAssigneeName);
-  readonly inProgressTasks$: Observable<TaskWithAssignee[]> = this.store.select(selectInProgressTasksWithAssigneeName);
-  readonly doneTasks$: Observable<TaskWithAssignee[]> = this.store.select(selectDoneTasksWithAssigneeName);
+  readonly allToDoTasks$: Observable<TaskWithAssignee[]> = this.store.select(selectToDoTasksWithAssigneeName);
+  readonly allInProgressTasks$: Observable<TaskWithAssignee[]> = this.store.select(selectInProgressTasksWithAssigneeName);
+  readonly allDoneTasks$: Observable<TaskWithAssignee[]> = this.store.select(selectDoneTasksWithAssigneeName);
+
+  readonly myToDoTasks$: Observable<TaskWithAssignee[]> = this.store.select(selectMyTasks).pipe(
+    map(tasks => tasks.filter(t => t.status === 'To Do'))
+  );
+  readonly myInProgressTasks$: Observable<TaskWithAssignee[]> = this.store.select(selectMyTasks).pipe(
+    map(tasks => tasks.filter(t => t.status === 'In Progress'))
+  );
+  readonly myDoneTasks$: Observable<TaskWithAssignee[]> = this.store.select(selectMyTasks).pipe(
+    map(tasks => tasks.filter(t => t.status === 'Done'))
+  );
+
+  filterMode : 'all' | 'my' = 'all'
 
   isModalOpen = false;
   editingTask: Task | null = null;
 
   ngOnInit(): void {
     this.store.dispatch(TasksAction.loadTasks());
-    this.store.dispatch(UsersActions.loadUsers()); 
+    this.store.dispatch(UsersActions.loadUsers());
   }
 
   private readonly columnStatusMap: Record<string, TaskStatus> = {
@@ -59,6 +71,11 @@ export class KanbanBoardComponent implements OnInit {
     if (confirm('Are you sure you want to delete this task?')) {
       this.store.dispatch(TasksAction.deleteTask({ taskId }));
     }
+  }
+
+  //set filter
+  setFilter(mode: 'all' | 'my') {
+    this.filterMode = mode;
   }
 
   //onDrop
