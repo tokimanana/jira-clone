@@ -1,4 +1,22 @@
 <div class="board-header">
+  <div class="filter-controls">
+    <button
+      class="btn"
+      [class.btn-primary]="filterMode === 'all'"
+      [class.btn-secondary]="filterMode !== 'all'"
+      (click)="setFilter('all')"
+    >
+      All Tasks
+    </button>
+    <button
+      class="btn"
+      [class.btn-primary]="filterMode === 'my'"
+      [class.btn-secondary]="filterMode !== 'my'"
+      (click)="setFilter('my')"
+    >
+      My Tasks
+    </button>
+  </div>
   <button class="btn btn-primary" (click)="openModal()">+ Create Task</button>
 </div>
 
@@ -64,4 +82,8 @@
   </div>
 </div>
 
-<app-add-edit-task *ngIf="isModalOpen" [task]="editingTask" (close)="closeModal()"></app-add-edit-task>
+<app-add-edit-task
+  *ngIf="isModalOpen"
+  [task]="editingTask"
+  (close)="closeModal()"
+></app-add-edit-task>
