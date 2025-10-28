@@ -48,3 +48,15 @@ export const selectMyTasks = createSelector(
     return tasks.filter((task) => task.assigneeId === currentUserId);
   }
 );
+
+export const selectMyToDoTasks = createSelector(selectMyTasks, (tasks) =>
+  tasks.filter((task) => task.status === 'To Do')
+);
+
+export const selectMyInProgressTasks = createSelector(selectMyTasks, (tasks) =>
+  tasks.filter((task) => task.status === 'In Progress')
+);
+
+export const selectMyDoneTasks = createSelector(selectMyTasks, (tasks) =>
+  tasks.filter((task) => task.status === 'Done')
+);

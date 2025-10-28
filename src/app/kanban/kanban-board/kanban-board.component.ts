@@ -1,14 +1,28 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { map, Observable } from 'rxjs';
-import { Task, TaskStatus, TaskWithAssignee } from '../../store/tasks/tasks.model';
-import { selectDoneTasksWithAssigneeName, selectInProgressTasksWithAssigneeName, selectMyTasks, selectToDoTasksWithAssigneeName } from '../../store/tasks/tasks.selectors';
+import {
+  Task,
+  TaskStatus,
+  TaskWithAssignee,
+} from '../../store/tasks/tasks.model';
+import {
+  selectDoneTasksWithAssigneeName,
+  selectInProgressTasksWithAssigneeName,
+  selectMyDoneTasks,
+  selectMyInProgressTasks,
+  selectMyTasks,
+  selectMyToDoTasks,
+  selectToDoTasksWithAssigneeName,
+} from '../../store/tasks/tasks.selectors';
 import { TasksAction } from '../../store/tasks/tasks.actions';
 import { CommonModule } from '@angular/common';
 import { TaskCardComponent } from '../task-card/task-card.component';
 import { CdkDragDrop, DragDropModule } from '@angular/cdk/drag-drop';
 import { AddEditTaskComponent } from '../add-edit-task/add-edit-task.component';
 import { UsersActions } from '../../store/users/users.action';
+
+type FilterMode = 'all' | 'my';
 
 @Component({
   selector: 'app-kanban-board',
@@ -24,22 +38,26 @@ import { UsersActions } from '../../store/users/users.action';
 export class KanbanBoardComponent implements OnInit {
   private readonly store = inject(Store);
 
-  readonly allToDoTasks$: Observable<TaskWithAssignee[]> = this.store.select(selectToDoTasksWithAssigneeName);
-  readonly allInProgressTasks$: Observable<TaskWithAssignee[]> = this.store.select(selectInProgressTasksWithAssigneeName);
-  readonly allDoneTasks$: Observable<TaskWithAssignee[]> = this.store.select(selectDoneTasksWithAssigneeName);
-
-  readonly myToDoTasks$: Observable<TaskWithAssignee[]> = this.store.select(selectMyTasks).pipe(
-    map(tasks => tasks.filter(t => t.status === 'To Do'))
+  readonly allToDoTasks$: Observable<TaskWithAssignee[]> = this.store.select(
+    selectToDoTasksWithAssigneeName
   );
-  readonly myInProgressTasks$: Observable<TaskWithAssignee[]> = this.store.select(selectMyTasks).pipe(
-    map(tasks => tasks.filter(t => t.status === 'In Progress'))
-  );
-  readonly myDoneTasks$: Observable<TaskWithAssignee[]> = this.store.select(selectMyTasks).pipe(
-    map(tasks => tasks.filter(t => t.status === 'Done'))
+  readonly allInProgressTasks$: Observable<TaskWithAssignee[]> =
+    this.store.select(selectInProgressTasksWithAssigneeName);
+  readonly allDoneTasks$: Observable<TaskWithAssignee[]> = this.store.select(
+    selectDoneTasksWithAssigneeName
   );
 
-  filterMode : 'all' | 'my' = 'all'
+  readonly myToDoTasks$: Observable<TaskWithAssignee[]> = this.store.select(selectMyToDoTasks);
+  readonly myInProgressTasks$: Observable<TaskWithAssignee[]> = this.store.select(selectMyInProgressTasks);
+  readonly myDoneTasks$: Observable<TaskWithAssignee[]> = this.store.select(selectMyDoneTasks);
 
+  private readonly COLUMN_STATUS_MAP: Record<string, TaskStatus> = {
+    todo: 'To Do',
+    inprogress: 'In Progress',
+    done: 'Done',
+  };
+
+  filterMode: FilterMode = 'all';
   isModalOpen = false;
   editingTask: Task | null = null;
 
@@ -54,27 +72,23 @@ export class KanbanBoardComponent implements OnInit {
     done: 'Done',
   };
 
-  //openModal
   openModal(task: Task | null = null): void {
     this.editingTask = task;
     this.isModalOpen = true;
   }
 
-  //closeModal
   closeModal(): void {
     this.isModalOpen = false;
     this.editingTask = null;
   }
 
-  //deleteTask
   onDeleteTask(taskId: string): void {
     if (confirm('Are you sure you want to delete this task?')) {
       this.store.dispatch(TasksAction.deleteTask({ taskId }));
     }
   }
 
-  //set filter
-  setFilter(mode: 'all' | 'my') {
+  setFilter(mode: FilterMode) {
     this.filterMode = mode;
   }
 
