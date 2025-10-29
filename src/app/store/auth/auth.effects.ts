@@ -15,17 +15,20 @@ export class AuthEffect {
   login$ = createEffect(() =>
     this.action$.pipe(
       ofType(AuthActions.login),
+      tap(() => console.log('🔵 Effect: Login démarré')),
       switchMap(({ email, password }) =>
         this.authService.login(email, password).pipe(
-          map((userCredential) =>
-            AuthActions.loginSuccess({
+          map((userCredential) => {
+            console.log('✅ Effect: Login réussi');
+            return AuthActions.loginSuccess({
               uid: userCredential.user.uid,
               email: userCredential.user.email,
-            })
-          ),
-          catchError((error) =>
-            of(AuthActions.loginFailure({ error: error.message }))
-          )
+            });
+          }),
+          catchError((error) => {
+            console.log('❌ Effect: Login échoué', error);
+            return of(AuthActions.loginFailure({ error: error.message }));
+          })
         )
       )
     )
@@ -35,9 +38,10 @@ export class AuthEffect {
   register$ = createEffect(() =>
     this.action$.pipe(
       ofType(AuthActions.register),
+      tap(() => console.log('🔵 Effect: Register démarré')),
       switchMap(({ name, email, password }) =>
         this.authService.register(email, password).pipe(
-          //
+          tap(() => console.log('✅ Effect: Compte créé, création du document...')),
           mergeMap((userCredential) =>
             this.authService
               .createUserDocument(
@@ -46,17 +50,23 @@ export class AuthEffect {
                 name
               )
               .pipe(
-                map(() =>
-                  AuthActions.registerSuccess({
+                map(() => {
+                  console.log('✅ Effect: Document utilisateur créé');
+                  return AuthActions.registerSuccess({
                     uid: userCredential.user.uid,
                     email: userCredential.user.email,
-                  })
-                ),
-                catchError((error) =>
-                  of(AuthActions.registerFailure({ error: error.message }))
-                )
+                  });
+                }),
+                catchError((error) => {
+                  console.log('❌ Effect: Erreur création document', error);
+                  return of(AuthActions.registerFailure({ error: error.message }));
+                })
               )
-          )
+          ),
+          catchError((error) => {
+            console.log('❌ Effect: Erreur register', error);
+            return of(AuthActions.registerFailure({ error: error.message }));
+          })
         )
       )
     )
@@ -75,12 +85,15 @@ export class AuthEffect {
     )
   );
 
-  //authSuccess
+  // authSuccess
   authSucces$ = createEffect(
     () =>
       this.action$.pipe(
         ofType(AuthActions.loginSuccess, AuthActions.registerSuccess),
-        tap(() => this.router.navigate(['/board']))
+        tap(() => {
+          console.log('✅ Auth réussie, navigation vers /board');
+          this.router.navigate(['/board']);
+        })
       ),
     { dispatch: false }
   );
