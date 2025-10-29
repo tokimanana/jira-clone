@@ -3,13 +3,13 @@ import { Store } from '@ngrx/store';
 import { map, Observable } from 'rxjs';
 import { selectAuthState } from '../../store/auth/auth.selectors';
 import { AuthActions } from '../../store/auth/auth.action';
-import { CommonModule } from '@angular/common';
+import { AsyncPipe, CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-register',
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, AsyncPipe],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss',
 })
@@ -23,6 +23,7 @@ export class RegisterComponent {
   isLoading$: Observable<boolean> = this.store
     .select(selectAuthState)
     .pipe(map((s) => s.isLoading));
+
   error$: Observable<string | null> = this.store
     .select(selectAuthState)
     .pipe(map((s) => s.error));
