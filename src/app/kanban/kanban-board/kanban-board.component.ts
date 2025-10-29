@@ -49,7 +49,6 @@ export class KanbanBoardComponent implements OnInit {
   isModalOpen = false;
   editingTask: Task | null = null;
 
-  // Mapping
   private readonly columnStatusMap: Record<string, TaskStatus> = {
     todo: 'To Do',
     inprogress: 'In Progress',
