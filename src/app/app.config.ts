@@ -20,6 +20,8 @@ import { TasksEffect } from './store/tasks/tasks.effects';
 import { UsersState } from './store/users/users.model';
 import { usersReducer } from './store/users/users.reducer';
 import { UsersEffect } from './store/users/users.effect';
+import { commentReducer } from './store/comments/comments.reducer';
+import { CommentsState } from './store/comments/comments.model';
 
 // Interface pour typer l'état global
 export interface AppState {
@@ -27,6 +29,7 @@ export interface AppState {
   auth: AuthState;
   tasks: TasksState;
   users: UsersState;
+  comments: CommentsState;
 }
 
 export function localStorageSyncReducer(
@@ -50,6 +53,7 @@ export const appConfig: ApplicationConfig = {
         auth: authReducer,
         tasks: tasksReducer,
         users: usersReducer,
+        comments: commentReducer
       },
       { metaReducers }
     ),
