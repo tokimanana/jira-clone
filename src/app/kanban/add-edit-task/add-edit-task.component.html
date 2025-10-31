@@ -48,6 +48,42 @@
         </select>
       </div>
 
+      @if(task) {
+        <div class="comments-sections">
+          @if(comments$ | async; as comments) {
+            <div>
+              <h3 class="comments-title">
+                Comments <span class="comment-count">{{ comments.length }}</span>
+              </h3>
+              <div class="comments-list">
+              @for(comment of comments; track comment.id) {
+                <div class="comment-item">
+                  <div class="comment-header">
+                    <strong class="comment-author">{{ comment.authorName || 'Anonymous' }}</strong>
+                    @if(comment.createdAt) {
+                      <span class="comment-date">{{ comment.createdAt.toDate() | date: 'M/d/yy, h:mm a' }}</span>
+                    } @else {
+                      <span class="comment-date">Just now</span>
+                    }
+                  </div>
+                  <p class="comment-content">{{ comment.content }}</p>
+                </div>
+              }
+            </div>
+          </div>
+          }
+
+          <div class="comment-form">
+            <textarea
+              [(ngModel)]="newComment"
+              [ngModelOptions]="{standalone: true}"
+              placeholder="Add a comment..."
+            ></textarea>
+            <button type="button" (click)="onAddComment()" class="btn btn-primary">Submit</button>
+          </div>
+        </div>
+      }
+
       <footer class="modal-footer">
         <button type="button" class="btn btn-secondary" (click)="onClose()">
           Cancel

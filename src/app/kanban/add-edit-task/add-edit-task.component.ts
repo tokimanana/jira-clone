@@ -15,11 +15,14 @@ import { UsersActions } from '../../store/users/users.action';
 import { TasksAction } from '../../store/tasks/tasks.actions';
 import { selectCurrentUserId } from '../../store/auth/auth.selectors';
 import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { AsyncPipe, CommonModule } from '@angular/common';
+import { CommentWithAuthName } from '../../store/comments/comments.model';
+import { selectCommentsWithAuthorDetails } from '../../store/comments/comments.selectors';
+import { CommentsAction } from '../../store/comments/comments.action';
 
 @Component({
   selector: 'app-add-edit-task',
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, AsyncPipe],
   templateUrl: './add-edit-task.component.html',
   styleUrl: './add-edit-task.component.scss',
 })
@@ -46,9 +49,12 @@ export class AddEditTaskComponent implements OnInit {
     assigneeId: null,
   };
 
+  newComment = '';
+
   isEditMode = false;
 
   users$: Observable<User[]> = this.store.select(selectAllUsers);
+  comments$: Observable<CommentWithAuthName[]> = this.store.select(selectCommentsWithAuthorDetails);
 
   ngOnInit(): void {
     this.store.dispatch(UsersActions.loadUsers());
@@ -61,6 +67,7 @@ export class AddEditTaskComponent implements OnInit {
         status: this.task.status,
         assigneeId: this.task.assigneeId || null,
       };
+      this.store.dispatch(CommentsAction.loadComments({taskId: this.task.id}));
     } else {
       this.isEditMode = false;
     }
@@ -94,5 +101,11 @@ export class AddEditTaskComponent implements OnInit {
 
   onClose(): void {
     this.close.emit();
+  }
+
+  onAddComment() {
+    if(!this.newComment.trim() || !this.task) return;
+    this.store.dispatch(CommentsAction.addComments({taskId: this.task?.id, content: this.newComment}));
+    this.newComment = '';
   }
 }
