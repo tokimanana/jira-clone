@@ -22,6 +22,7 @@ import { usersReducer } from './store/users/users.reducer';
 import { UsersEffect } from './store/users/users.effect';
 import { commentReducer } from './store/comments/comments.reducer';
 import { CommentsState } from './store/comments/comments.model';
+import { CommentsEffect } from './store/comments/comments.effects';
 
 // Interface pour typer l'état global
 export interface AppState {
@@ -57,7 +58,7 @@ export const appConfig: ApplicationConfig = {
       },
       { metaReducers }
     ),
-    provideEffects([AuthEffect, TasksEffect, UsersEffect]),
+    provideEffects([AuthEffect, TasksEffect, UsersEffect, CommentsEffect]),
     provideStoreDevtools(),
     provideRouterStore(),
     provideFirebaseApp(() => initializeApp(environment.firebase)),
