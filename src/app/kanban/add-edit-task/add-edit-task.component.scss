@@ -82,6 +82,7 @@
     font-size: 14px;
     font-family: inherit;
     transition: border-color 0.2s, box-shadow 0.2s;
+    box-sizing: border-box;
 
     &:focus {
       outline: none;
@@ -177,6 +178,7 @@
     resize: vertical;
     min-height: 80px;
     margin-bottom: 12px;
+    box-sizing: border-box;
 
     &:focus {
       outline: none;
