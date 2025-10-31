@@ -13,28 +13,28 @@ export class CommentsService {
 
 
   getComments(taskId: string): Observable<Comment[]> {
-  return new Observable(subscriber => {
-    const unsubscribe = runInInjectionContext(this.injector, () => {
-      const commentsCollection = collection(this.firestore, `tasks/${taskId}/comments`);
-      const q = query(commentsCollection, orderBy('createdAt', 'asc'));
+    return new Observable(subscriber => {
+      const unsubscribe = runInInjectionContext(this.injector, () => {
+        const commentsCollection = collection(this.firestore, `tasks/${taskId}/comments`);
+        const q = query(commentsCollection, orderBy('createdAt', 'asc'));
 
-      return onSnapshot(q,
-        (snapshot: QuerySnapshot) => {
-          const comments: Comment[] = [];
-          snapshot.forEach(doc => {
-            comments.push({id: doc.id, ...doc.data()} as Comment);
-          });
-          subscriber.next(comments);
-        },
-        (error) => {
-          subscriber.error(error);
-        }
-      );
+        return onSnapshot(q,
+          (snapshot: QuerySnapshot) => {
+            const comments: Comment[] = [];
+            snapshot.forEach(doc => {
+              comments.push({id: doc.id, ...doc.data()} as Comment);
+            });
+            subscriber.next(comments);
+          },
+          (error) => {
+            subscriber.error(error);
+          }
+        );
+      });
+
+      return () => unsubscribe();
     });
-
-    return () => unsubscribe();
-  });
-}
+  }
 
   /**
  * Alternative implementation using collectionData (simpler)
@@ -47,14 +47,16 @@ export class CommentsService {
 // }
 
   addComment(taskId: string, content: string, author: { uid: string; email: string }): Observable<DocumentReference> {
-    const commentsCollection = collection(this.firestore, `tasks/${taskId}/comments`);
-    return from(addDoc(commentsCollection, {
-      taskId,
-      content,
-      authorId: author.uid,
-      authorEmail: author.email,
-      createdAt: serverTimestamp()
-    }))
+    return runInInjectionContext(this.injector, () => {
+      const commentsCollection = collection(this.firestore, `tasks/${taskId}/comments`);
+      return from(addDoc(commentsCollection, {
+        taskId,
+        content,
+        authorId: author.uid,
+        authorEmail: author.email,
+        createdAt: serverTimestamp()
+      }));
+    });
   }
 }
 
