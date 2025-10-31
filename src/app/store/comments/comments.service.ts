@@ -1,5 +1,5 @@
 import { addDoc, collection, DocumentReference, Firestore, onSnapshot, orderBy, query, serverTimestamp, QuerySnapshot } from '@angular/fire/firestore';
-import { inject, Injectable } from "@angular/core";
+import { inject, Injectable, Injector, runInInjectionContext } from "@angular/core";
 import { from, Observable } from "rxjs";
 import { Comment } from './comments.model';
 
@@ -9,25 +9,32 @@ import { Comment } from './comments.model';
 })
 export class CommentsService {
   private readonly firestore: Firestore = inject(Firestore);
+  private readonly injector: Injector = inject(Injector);
 
 
-  getComments(taskId : string) : Observable<Comment[]>{
-    const commentsCollection = collection(this.firestore, `tasks/${taskId}/comments`);
-    const q = query(commentsCollection, orderBy('createdAt', 'asc'));
+  getComments(taskId: string): Observable<Comment[]> {
+  return new Observable(subscriber => {
+    const unsubscribe = runInInjectionContext(this.injector, () => {
+      const commentsCollection = collection(this.firestore, `tasks/${taskId}/comments`);
+      const q = query(commentsCollection, orderBy('createdAt', 'asc'));
 
-    return new Observable(subscriber => {
-      const unsubscribe = onSnapshot(q, (snapshot: QuerySnapshot) => {
-        const comments : Comment[] = [];
-        snapshot.forEach(doc => {
-          comments.push({id : doc.id, ...doc.data()} as Comment)
-        });
-        subscriber.next(comments);
-      }, (error) => {
-        subscriber.error(error)
-      } );
-      return () => unsubscribe();
-    })
-  }
+      return onSnapshot(q,
+        (snapshot: QuerySnapshot) => {
+          const comments: Comment[] = [];
+          snapshot.forEach(doc => {
+            comments.push({id: doc.id, ...doc.data()} as Comment);
+          });
+          subscriber.next(comments);
+        },
+        (error) => {
+          subscriber.error(error);
+        }
+      );
+    });
+
+    return () => unsubscribe();
+  });
+}
 
   /**
  * Alternative implementation using collectionData (simpler)
