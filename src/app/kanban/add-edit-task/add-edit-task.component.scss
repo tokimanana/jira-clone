@@ -18,6 +18,7 @@
   max-width: 600px;
   max-height: 90vh;
   overflow-y: auto;
+  overflow-x: hidden;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
@@ -148,15 +149,15 @@
   font-size: 14px;
   font-weight: 600;
   color: #2563eb;
-  margin: 0;
 }
 
 .comment-content {
-  margin: 0;
+  margin: 0 0 8px 0;
   font-size: 14px;
   color: #374151;
   line-height: 1.5;
 }
+
 .comment-date {
   font-size: 12px;
   color: #9ca3af;
@@ -164,6 +165,7 @@
 
 .comment-form {
   margin-top: 16px;
+  margin-bottom: 24px;
 
   textarea {
     width: 100%;
@@ -188,6 +190,11 @@
   }
 }
 
+.comment-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .modal-footer {
   display: flex;
   justify-content: flex-end;
@@ -196,6 +203,9 @@
   border-top: 1px solid #e5e7eb;
   background: #f9fafb;
   border-radius: 0 0 8px 8px;
+  margin-top: 0;
+  margin-left: -24px;
+  margin-right: -24px;
 }
 
 .btn {
