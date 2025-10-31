@@ -34,7 +34,7 @@ export class CommentsEffect {
       switchMap(([{taskId, content}, user]) => {
 
         if(!user.uid || !user.email) return of({type: '[comments]  User not logged in'})
-        return this.commentsService.addComment(taskId, content, {uid: user.uid, email: user.email, name: 'User name'}).pipe(
+        return this.commentsService.addComment(taskId, content, {uid: user.uid, email: user.email}).pipe(
           map(() => ({type: '[comments]  add comment successfull'})),
           catchError((error) => of(CommentsAction.addCommentsFailure({error: error.message})))
         )
