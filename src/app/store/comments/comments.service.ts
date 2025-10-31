@@ -11,32 +11,41 @@ export class CommentsService {
   private readonly firestore: Firestore = inject(Firestore);
 
 
-  getComments(taskId: string): Observable<Comment[]> {
+  getComments(taskId : string) : Observable<Comment[]>{
     const commentsCollection = collection(this.firestore, `tasks/${taskId}/comments`);
     const q = query(commentsCollection, orderBy('createdAt', 'asc'));
 
     return new Observable(subscriber => {
-      const unsubscribe = onSnapshot(q, (QuerySnapshot) => {
+      const unsubscribe = onSnapshot(q, (snapshot: QuerySnapshot) => {
         const comments : Comment[] = [];
-        QuerySnapshot.forEach(doc => {
-          comments.push({id: doc.id, ...doc.data()} as Comment)
+        snapshot.forEach(doc => {
+          comments.push({id : doc.id, ...doc.data()} as Comment)
         });
         subscriber.next(comments);
       }, (error) => {
         subscriber.error(error)
-      })
-      return () => unsubscribe()
+      } );
+      return () => unsubscribe();
     })
   }
 
-  addComment(taskId: string, content: string, user: { uid: string; name: string; email: string}): Observable<DocumentReference> {
+  /**
+ * Alternative implementation using collectionData (simpler)
+ * Commented out in favor of onSnapshot for educational purposes
+ */
+// getCommentsSimple(taskId: string): Observable<Comment[]> {
+//   const ref = collection(this.firestore, `tasks/${taskId}/comments`);
+//   const q = query(ref, orderBy('createdAt', 'asc'));
+//   return collectionData(q, { idField: 'id' }) as Observable<Comment[]>;
+// }
+
+  addComment(taskId: string, content: string, author: { uid: string; email: string }): Observable<DocumentReference> {
     const commentsCollection = collection(this.firestore, `tasks/${taskId}/comments`);
     return from(addDoc(commentsCollection, {
       taskId,
       content,
-      authorId: user.uid,
-      authorName: user.name,
-      authorEmail: user.email,
+      authorId: author.uid,
+      authorEmail: author.email,
       createdAt: serverTimestamp()
     }))
   }
