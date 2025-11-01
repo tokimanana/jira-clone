@@ -15,10 +15,10 @@ export class UsersEffect {
     ofType(UsersActions.loadUsers),
     switchMap(() =>
       this.usersService.getUsers().pipe(
-        map((users) => UsersActions.loadTasksSuccess({
+        map((users) => UsersActions.loadUsersSuccess({
           users
         })),
-        catchError((error) => of(UsersActions.loadTasksFailure({
+        catchError((error) => of(UsersActions.loadUsersFailure({
           error: error.message
         })))
       )
