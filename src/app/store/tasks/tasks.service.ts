@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, Injector, runInInjectionContext } from '@angular/core';
 import {
   addDoc,
   collection,
@@ -17,6 +17,7 @@ import { from, Observable } from 'rxjs';
 })
 export class TasksService {
   private readonly firestore: Firestore = inject(Firestore);
+  private readonly injector: Injector = inject(Injector);
   private readonly tasksCollection = collection(this.firestore, 'tasks');
   private readonly tasks$: Observable<Task[]>;
 
@@ -31,16 +32,22 @@ export class TasksService {
   }
 
   addTasks(taskData: Omit<Task, 'id'>): Observable<DocumentReference> {
-    return from(addDoc(this.tasksCollection, taskData));
+    return runInInjectionContext(this.injector, () => {
+      return from(addDoc(this.tasksCollection, taskData));
+    });
   }
 
   updateTask(taskUpdate: Partial<Task> & { id: string }): Observable<void> {
-    const taskDocRef = doc(this.firestore, `tasks/${taskUpdate.id}`);
-    return from(updateDoc(taskDocRef, taskUpdate));
+    return runInInjectionContext(this.injector, () => {
+      const taskDocRef = doc(this.firestore, `tasks/${taskUpdate.id}`);
+      return from(updateDoc(taskDocRef, taskUpdate));
+    });
   }
 
   deleteTask(taskId: string): Observable<void> {
-    const taskDocRef = doc(this.firestore, `tasks/${taskId}`);
-    return from(deleteDoc(taskDocRef));
+    return runInInjectionContext(this.injector, () => {
+      const taskDocRef = doc(this.firestore, `tasks/${taskId}`);
+      return from(deleteDoc(taskDocRef));
+    });
   }
 }
