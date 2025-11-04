@@ -4,11 +4,13 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { selectIsLoggedIn } from './store/auth/auth.selectors';
 import { AuthActions } from './store/auth/auth.action';
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, CommonModule } from '@angular/common';
+import { SpinnerComponent } from "./shared/components/spinner/spinner.component";
+import { ToastComponent } from "./shared/components/toast/toast.component";
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, AsyncPipe],
+  imports: [RouterOutlet, CommonModule, AsyncPipe, SpinnerComponent, ToastComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
@@ -19,7 +21,7 @@ export class AppComponent {
 
   isLoggedIn$ : Observable<boolean> = this.store.select(selectIsLoggedIn);
 
-  onLogout(): void {
+  protected onLogout(): void {
     this.store.dispatch(AuthActions.logout());
   }
 }

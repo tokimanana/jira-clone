@@ -1,8 +1,18 @@
+<app-spinner />
+<app-toast />
+
 <nav class="navbar">
   <h1>NgRx Jira Clone</h1>
 
   @if(isLoggedIn$ | async) {
-    <button class="logout-button" (click)="onLogout()">Logout</button>
+    <button
+      class="logout-button"
+      (click)="onLogout()"
+      type="button"
+      aria-label="Logout"
+    >
+      Logout
+    </button>
   }
 </nav>
 
